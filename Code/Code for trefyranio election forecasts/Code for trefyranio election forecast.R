@@ -187,9 +187,9 @@ opinion = select(opinion, grouping, M, FP, C, KD, S, V, MP,
 
 #### 2. Running the dynamic linear models
 
-# Variance in trends is deemed to be 3 times greater than measured
-# estimates due to bias in the polls. For Fi and the blocks the observation
-# level variance is taken to be a factor seven of the latent state variance.
+# Variance in both latent and observed trends is deemed to be 3 times 
+# greater than actually estimated by the model (to account for
+# unobserved bias in the polls).
 
 DLMdata = opinion
 
