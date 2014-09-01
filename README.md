@@ -15,6 +15,6 @@ Since I started making my forecasts in May the code has been revised a couple of
  
 In the beginning I weighted and aggregated the polls on a monthly basis. Now I ignore time and instead focus on the number of people asked. As soon as *8000 people* have been polled those scores are aggregated and new polls that come in then form part of the next group of 8000 people. By aggregating based on number of people rather than time we ensure that all groupings are equally large and therefore simultaneously that all scores are equally reliable. 
 
-Secondly, the variance is now calculated through the R time series command "StructTS" and then multiplied by 3 to take account of unobserved uncertainty stemming from potential bias in the polls. This seems to work well when applying the model to past elections. 
+Secondly, the variance is now calculated through the R time series command "StructTS" and then multiplied by 3 to take account of unobserved uncertainty stemming from potential bias in the polls. This seems to work well when applying the model to past elections but is also a bit of a "dirty fix" since we don't really know how large the unobserved bias is. 
 
 In the future I will also employ different weights for different polling institutes but have yet to decide exactly how to calculate the weights.
