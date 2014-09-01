@@ -142,7 +142,7 @@ group = group_by(opinion, grouping) %>%
 
 opinion = cbind(opinion, group[, -10:-1])
 
-# Calculate weighted vote shares per month
+# Calculate weighted vote shares per grouping
 opinion = mutate(opinion, wshare_M = tot_M/Tn, 
                  wshare_FP = tot_FP/Tn, 
                  wshare_C = tot_C/Tn,
@@ -627,11 +627,17 @@ DLMlong = select(DLMdata, S, V, MP, M, FP, C, KD, SD, FI) %>%
 Smooth_long = cbind(Smooth_long, Polls = DLMlong$Polls)
 
 ggplot(Smooth_long, aes(x=Grouping, y=value, colour=Party)) +
-  geom_line() +
-  geom_point(colour="grey") +
-  geom_point(aes(x=Grouping, y=Polls, colour=Party)) +
+  geom_line(size=1) +
+  geom_point(size=3, colour="grey") +
+  geom_point(aes(x=Grouping, y=Polls, colour=Party), size=3) +
   facet_wrap(~Party, scales="free_y") +
-  ggtitle("DLM trend line and observed data points") +
-  theme(axis.title.x=element_text(size=22, face="bold")) + 
+  ggtitle("DLM-uppskattning och opinionsdata") +
+  theme(strip.text=element_text(size=18, face="bold")) +
+  theme(axis.title.x=element_blank()) + 
+  theme(axis.text.x=element_blank()) +
+  theme(strip.background=element_rect(fill="skyblue")) +
+  labs(y="Resultat") +
+  guides(colour=F) +
   theme(axis.title.y=element_text(size=22, vjust=1, face="bold")) +
+  theme(axis.text.y=element_text(size=18)) +
   theme(plot.title=element_text(vjust=1, size=24, face="bold"))

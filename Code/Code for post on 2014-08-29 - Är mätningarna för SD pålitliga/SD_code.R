@@ -1,5 +1,6 @@
 ## Daniel Walther
 # 2014-08-29
+# R version 3.1.0 (2014-04-10) -- "Spring Dance"
 # Code for special blog post about SD
 
 # Load necessary packages
