@@ -11,8 +11,8 @@ library(dplyr)
 
 # Get standard deviation and mean of DLM estimate for left side
 
-Blocksub = filter(Block_smooth, Grouping==max(Grouping))
-LeftSD = (Blocksub$ubLeft-Blocksub$Left) / 1.96
+Blocksub = Block_trends[nrow(Block_trends),]
+LeftSD = (Blocksub$Leftub-Blocksub$Left) / 1.96
 Leftmean = Blocksub$Left
 
 # recalculate result for a situation where FI and others 
@@ -20,8 +20,8 @@ Leftmean = Blocksub$Left
 Leftmean = (Leftmean/96) * 100
 
 # Likelihood that KD gets in parliament
-partysub = filter(smooth, Grouping==max(Grouping))
-KDSD = (partysub$ubKD-partysub$KD) / 1.96
+partysub = Trends[nrow(Trends),]
+KDSD = (partysub$KDub-partysub$KD) / 1.96
 KDmean = partysub$KD
 Likelihood_noKD = 1 - pnorm(4, KDmean, KDSD, lower.tail=F)
 
@@ -39,6 +39,8 @@ ggplot(LeftDF, aes(x=xvalues, y=likelihood)) +
   geom_line() +
   scale_x_continuous(breaks=seq(45, 55, 1)) +
   theme_bw() +
+  geom_text(data=subset(LeftDF, likelihood==max(likelihood)), 
+            aes(label=xvalues), vjust=-0.5, size=6, colour="firebrick3") +
   geom_area(data=subset(LeftDF, xvalues>49.9), alpha=0.5, fill="firebrick3") +
   labs(x="Resultat", y="",
        title="Hur sannolikt är det att vänstersidan får egen majoritet?") +
@@ -52,9 +54,8 @@ ggplot(LeftDF, aes(x=xvalues, y=likelihood)) +
   theme(panel.border=element_blank()) +
   theme(axis.line=element_line( colour="black")) +
   geom_vline(xintercept=50, linetype="dashed") +
-  annotate("text", label="Sannolikhet att vänstersidan får\n en majoritet av mandaten efter valet=49.7%",
+  annotate("text", label="Sannolikhet att vänstersidan får\n en majoritet av mandaten efter valet",
            x=53, y=0.25, size=7) +
   annotate("segment", x = 52, y = 0.23, xend = 51.5, yend = 0.21,
-           arrow = arrow(length = unit(0.5, "cm")), size=1.5, colour="firebrick3") +
-  annotate("text", label="49.9%", x=49.9, y=0.34, size=7, colour="firebrick3")
+           arrow = arrow(length = unit(0.5, "cm")), size=1.5, colour="firebrick3") 
 

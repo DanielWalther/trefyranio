@@ -39,7 +39,7 @@ stdev = mutate(stdev, relative_std = (sd/avg$mean))
 
 # Dataset for scatterplot of and time line
 # For this to work you need to first run the DLM election forecast
-SD = filter(Smooth_long, Party=="SD", Date>as.Date("2013-12-31"))
+SD = filter(Long, Party=="SD", Date>as.Date("2013-12-31"))
 df2 = filter(opinion, PublDate>as.Date("2013-12-31"))
 
 
