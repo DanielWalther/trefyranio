@@ -13,8 +13,8 @@ Since I started making my forecasts in May the code has been revised a couple of
 * How the polls are weighted
 * How the variance terms of the observation equation and the latent state are calculated
  
-In the beginning I weighted and aggregated the polls on a monthly basis. Now I ignore time and instead focus on the number of people asked. As soon as *8000 people* have been polled those scores are aggregated and new polls that come in then form part of the next group of 8000 people. By aggregating based on number of people rather than time we ensure that all groupings are equally large and therefore simultaneously that all scores are equally reliable. 
+In the beginning I weighted and aggregated the polls either on a monthly basis or after a certain number of people had been polled. Now I avoid aggregation and instead have a completely continuous time trend. Each new poll is included as a new observation in the model and it is weighted by the square root of the number of people that have been polled.
 
-Secondly, the variance is now calculated through the R time series command "StructTS" and then multiplied by 3 to take account of unobserved uncertainty stemming from potential bias in the polls. This seems to work well when applying the model to past elections but is also a bit of a "dirty fix" since we don't really know how large the unobserved bias is. 
+Secondly, the variance of the observed state is assumed to have mean zero and a standard deviation corresponding to the size of the poll. The variance of the latent state is given a (constant) non-informative gamma prior.
 
-In the future I will also employ different weights for different polling institutes but have yet to decide exactly how to calculate the weights.
+Two polling houses are given less weight - Sentio and United Minds. These tend to stand out from other polls more than one would expect from random chance alone and United Minds in particular also performed poorly in the 2010 election. All polls from Sentio are weighted down by 20% and those from United Minds by 10%.
