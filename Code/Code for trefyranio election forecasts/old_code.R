@@ -1,7 +1,7 @@
 ## Daniel Walther
 ## 2014-09-01
 ## R version 3.1.0 (2014-04-10) -- "Spring Dance"
-## FUll, replication ready code for the election forecasts on trefyranio.com
+## OLD code for the election forecasts on trefyranio.com
 
 ## The code is divided into four main sections
 # 1. Getting, reorganizing and weighting the data
