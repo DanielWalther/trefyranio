@@ -15,7 +15,6 @@
 
 library(repmis)
 library(stringr)
-library(dplyr)
 library(magrittr)
 library(lubridate)
 library(car)
@@ -23,7 +22,7 @@ library(bsts)
 library(ggplot2)
 library(reshape2)
 library(tidyr)
-
+library(dplyr)
 
 #### 1. Getting the data and creating a weighted time series
 data_url <- "https://github.com/MansMeg/SwedishPolls/raw/master/Data/Polls.csv"
@@ -83,7 +82,6 @@ compdata = group_by(opinion, Company_code) %>%
 compdata$N[is.na(compdata$N)] = compdata$Nmean[is.na(compdata$N)]
 opinion$N = as.integer(compdata$N)
 
-# Reduce influence of polls from Sentio and United Minds
 opinion$N[opinion$house=="Sentio"] = 0.8*opinion$N[opinion$house=="Sentio"]
 opinion$N[opinion$house=="United Minds"] = 0.9*opinion$N[opinion$house=="United Minds"]
 
@@ -104,12 +102,10 @@ S = opinion$S
 tsS = ts(S)
 Sprior = SdPrior(sigma.guess=mean(S[1:4])/50, sample.size=sqrt(opinion$N))
 
-# The sigma guess is a function of the size of the party. The confidence
-# is a direct result of the size of the poll
 
 ss = AddLocalLevel(y=S, sigma.prior = Sprior) 
 
-model = bsts(S, state.specification = ss, niter=2000, burn=100)
+model = bsts(S, state.specification = ss, niter=4000, burn=100)
 pred <- predict(model, horizon = 12, burn = 100)
 
 Strend = data.frame(model$state.contributions)
@@ -126,7 +122,7 @@ Vprior = SdPrior(sigma.guess = mean(V)/30,
 
 ss = AddLocalLevel(y=V, sigma.prior = Vprior) 
 
-model = bsts(V, state.specification = ss, niter=2000, burn=100)
+model = bsts(V, state.specification = ss, niter=4000, burn=100)
 pred <- predict(model, horizon = 12, burn = 100)
 
 Vtrend = data.frame(model$state.contributions)
@@ -143,7 +139,7 @@ MPprior = SdPrior(sigma.guess = mean(MP)/30,
 
 ss = AddLocalLevel(y=MP, sigma.prior = MPprior) 
 
-model = bsts(MP, state.specification = ss, niter=2000, burn=100)
+model = bsts(MP, state.specification = ss, niter=4000, burn=100)
 pred <- predict(model, horizon = 12, burn = 100)
 
 MPtrend = data.frame(model$state.contributions)
@@ -160,7 +156,7 @@ Mprior = SdPrior(sigma.guess = mean(M)/50,
 
 ss = AddLocalLevel(y=M, sigma.prior = Mprior) 
 
-model = bsts(M, state.specification = ss, niter=2000, burn=100)
+model = bsts(M, state.specification = ss, niter=4000, burn=100)
 pred <- predict(model, horizon = 12, burn = 100)
 
 Mtrend = data.frame(model$state.contributions)
@@ -177,7 +173,7 @@ FPprior = SdPrior(sigma.guess = mean(FP)/30,
 
 ss = AddLocalLevel(y=FP, sigma.prior = FPprior) 
 
-model = bsts(FP, state.specification = ss, niter=2000, burn=100)
+model = bsts(FP, state.specification = ss, niter=4000, burn=100)
 pred <- predict(model, horizon = 12, burn = 100)
 
 FPtrend = data.frame(model$state.contributions)
@@ -194,7 +190,7 @@ Cprior = SdPrior(sigma.guess = mean(C)/30,
 
 ss = AddLocalLevel(y=C, sigma.prior = Cprior) 
 
-model = bsts(C, state.specification = ss, niter=2000, burn=100)
+model = bsts(C, state.specification = ss, niter=4000, burn=100)
 pred <- predict(model, horizon = 12, burn = 100)
 
 Ctrend = data.frame(model$state.contributions)
@@ -210,7 +206,7 @@ KDprior = SdPrior(sigma.guess = mean(KD)/30,
 
 ss = AddLocalLevel(y=KD, sigma.prior = KDprior) 
 
-model = bsts(KD, state.specification = ss, niter=2000, burn=100)
+model = bsts(KD, state.specification = ss, niter=4000, burn=100)
 pred <- predict(model, horizon = 12, burn = 100)
 
 KDtrend = data.frame(model$state.contributions)
@@ -228,7 +224,7 @@ SDprior = SdPrior(sigma.guess = mean(SD, na.rm=T)/30,
 
 ss = AddLocalLevel(y=SD, sigma.prior = SDprior) 
 
-model = bsts(SD, state.specification = ss, niter=2000, burn=100)
+model = bsts(SD, state.specification = ss, niter=4000, burn=100)
 pred <- predict(model, horizon = 12, burn = 100)
 
 SDtrend = data.frame(model$state.contributions)
@@ -247,7 +243,7 @@ Fiprior = SdPrior(sigma.guess = mean(Fi)/30,
 
 ss = AddLocalLevel(y=Fi, sigma.prior = Fiprior) 
 
-model = bsts(Fi, state.specification = ss, niter=2000, burn=100)
+model = bsts(Fi, state.specification = ss, niter=4000, burn=100)
 pred <- predict(model, horizon = 12, burn = 100)
 
 Fitrend = data.frame(model$state.contributions)
@@ -264,15 +260,14 @@ Alliansenprior = SdPrior(sigma.guess = min(mean(Left)/50, 0.5),
 
 ss = AddLocalLevel(y=Alliansen, sigma.prior = Alliansenprior) 
 
-model = bsts(Alliansen, state.specification = ss, niter=2000, burn=100)
+model = bsts(Alliansen, state.specification = ss, niter=4000, burn=100)
 pred <- predict(model, horizon = 12, burn = 100)
 
 Alliansentrend = data.frame(model$state.contributions)
 x=colMeans(Alliansentrend)
 Alliansendata = data.frame(Alliansen=x, Alliansenlb=x - 1.96*summary(model)$residual.sd, 
                            Alliansenub=x + 1.96*summary(model)$residual.sd, 
-                           date=opinion$Date, house=opinion$house
-)
+                           date=opinion$Date, house=opinion$house)
 
 # Left
 Left = opinion$Left
@@ -282,7 +277,7 @@ Leftprior = SdPrior(sigma.guess = min(mean(Left)/50, 0.5),
 
 ss = AddLocalLevel(y=Left, sigma.prior = Leftprior) 
 
-model = bsts(Left, state.specification = ss, niter=2000, burn=100)
+model = bsts(Left, state.specification = ss, niter=4000, burn=100)
 pred <- predict(model, horizon = 12, burn = 100)
 
 Lefttrend = data.frame(model$state.contributions)
@@ -368,7 +363,7 @@ ggplot(Pred_point, aes(x=reorder(Party, -value, FUN=mean), y=value)) +
   theme(axis.title.x=element_text(size=24, vjust=0, face="bold")) + 
   theme(axis.title.y=element_text(size=24, vjust=1, face="bold")) +
   theme(axis.text.x=element_text(size=24, colour=c("firebrick1", "royalblue", "goldenrod3", "seagreen",
-                                                   "firebrick3", "royalblue4", "purple4", "royalblue1",
+                                                   "firebrick3", "royalblue4","royalblue1", "purple4", 
                                                    "pink"), 
                                  face="bold")) +
   theme(axis.text.y=element_text(size=22)) +
@@ -379,7 +374,7 @@ ggplot(Pred_point, aes(x=reorder(Party, -value, FUN=mean), y=value)) +
   theme(legend.position="none") +
   annotate("text", label="Fyraprocentsspärren", x=2, y=3, size=7)+
   annotate("text", label="",
-           x=8, y=37, size=6, colour="navajowhite4")
+           x=7, y=37, size=7, colour="navajowhite4")
 
 # Block point prediction
 ggplot(Block_point, aes(x=Block, y=value)) +
@@ -406,10 +401,10 @@ ggplot(Block_point, aes(x=Block, y=value)) +
   theme(legend.position="none") +
   annotate("text", label="(SD och Fi ej inkluderade)", x=1.5, y=55, vjust=-1) +
   annotate("text", label="",
-           x=2.3, y=53, size=6, colour="navajowhite4") 
+           x=2.1, y=53, size=7, colour="navajowhite4") 
 
 # Time trend
-opinionlong = select(opinion, Alliansen, Left) %>%
+opinionlong = dplyr::select(opinion, Alliansen, Left) %>%
   gather(Block, Polls, Alliansen:Left)
 Block_long2 = cbind(Block_long, Polls = opinionlong$Polls)
 
@@ -433,7 +428,7 @@ ggplot(Block_long2, aes(x=date, y=value, colour=Block)) +
 
 # Party time trend
 
-opinionlong = select(opinion, S, V, MP, M, FP, C, KD, SD) %>%
+opinionlong = dplyr::select(opinion, S, V, MP, M, FP, C, KD, SD) %>%
   gather(Party, Polls, S:SD)
 Long2 = cbind(Long, Polls = opinionlong$Polls)
 
