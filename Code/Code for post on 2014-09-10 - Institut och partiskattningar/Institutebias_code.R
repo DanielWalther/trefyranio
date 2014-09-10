@@ -79,11 +79,12 @@ polls4=filter(polls2, Resultat>18)
 
 # Graph: Polling houses and larger parties
 ggplot(large2, aes(x=date, y=value, colour=Party)) +
-  geom_line(size=0.8) +
+  geom_line(size=1) +
   theme_bw() +
   theme(axis.text.y=element_text(size=20)) +
   theme(axis.text.x=element_text(size=18, angle=30, vjust=0.5)) +
-  geom_point(data=polls4, aes(x=Date, y=Resultat, colour=Party)) +
+  geom_point(data=polls4, aes(x=Date, y=Resultat, colour=Party), 
+             size=3) +
   facet_wrap(~house, scales="free_y") +
   scale_x_date(breaks="3 months", 
                limits=c(as.Date("2013-10-01"), 
