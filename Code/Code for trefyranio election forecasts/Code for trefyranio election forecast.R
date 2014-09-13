@@ -1,6 +1,6 @@
 
 ## Daniel Walther
-## 2014-09-08
+## 2014-09-12
 ## R version 3.1.0 (2014-04-10) -- "Spring Dance"
 ## Full, replication ready code for the election forecasts on trefyranio.com
 
@@ -24,7 +24,7 @@ library(reshape2)
 library(tidyr)
 library(dplyr)
 
-#### 1. Getting the data and creating a weighted time series
+#### 1. Loading the data and getting it into shape
 data_url <- "https://github.com/MansMeg/SwedishPolls/raw/master/Data/Polls.csv"
 polls <- repmis::source_data(data_url, sep = ",", dec = ".", header = TRUE)
 
@@ -255,7 +255,7 @@ Fidata = data.frame(FI=x, FIlb=x - 1.96*summary(model)$residual.sd,
 # Alliansen
 Alliansen = opinion$Alliansen
 tsAlliansen=ts(Alliansen)
-Alliansenprior = SdPrior(sigma.guess = min(mean(Left)/50, 0.5),
+Alliansenprior = SdPrior(sigma.guess = min(mean(Alliansen)/50, 0.5),
                          sample.size=sqrt(opinion$N))
 
 ss = AddLocalLevel(y=Alliansen, sigma.prior = Alliansenprior) 
@@ -363,7 +363,7 @@ ggplot(Pred_point, aes(x=reorder(Party, -value, FUN=mean), y=value)) +
   theme(axis.title.x=element_text(size=24, vjust=0, face="bold")) + 
   theme(axis.title.y=element_text(size=24, vjust=1, face="bold")) +
   theme(axis.text.x=element_text(size=24, colour=c("firebrick1", "royalblue", "goldenrod3", "seagreen",
-                                                   "firebrick3", "royalblue4","royalblue1", "purple4", 
+                                                   "royalblue4", "firebrick3","royalblue1", "purple4", 
                                                    "pink"), 
                                  face="bold")) +
   theme(axis.text.y=element_text(size=22)) +
@@ -373,7 +373,7 @@ ggplot(Pred_point, aes(x=reorder(Party, -value, FUN=mean), y=value)) +
   theme(axis.line=element_line( colour="black")) +
   theme(legend.position="none") +
   annotate("text", label="Fyraprocentsspärren", x=2, y=3, size=7)+
-  annotate("text", label="",
+  annotate("text", label="Senaste mätningen: Novus 2014-09-13",
            x=7, y=37, size=7, colour="navajowhite4")
 
 # Block point prediction
@@ -400,7 +400,7 @@ ggplot(Block_point, aes(x=Block, y=value)) +
   theme(axis.line=element_line( colour="black")) +
   theme(legend.position="none") +
   annotate("text", label="(SD och Fi ej inkluderade)", x=1.5, y=55, vjust=-1) +
-  annotate("text", label="",
+  annotate("text", label="Senaste mätningen: Novus 2014-09-13",
            x=2.1, y=53, size=7, colour="navajowhite4") 
 
 # Time trend
@@ -437,8 +437,8 @@ ggplot(Long2, aes(x=date, y=value, colour=Party)) +
   geom_line(size=1.2) +
   facet_wrap(~Party, scales="free_y") +
   scale_x_date(breaks="2 months", 
-               limits=c(as.Date("2013-10-01"), 
-                        as.Date("2014-09-01"))) +
+               limits=c(as.Date("2013-10-13"), 
+                        as.Date("2014-09-13"))) +
   ggtitle("DLM-uppskattning och opinionsdata") +
   theme(strip.text=element_text(size=18, face="bold")) +
   theme(axis.title.x=element_blank()) + 
