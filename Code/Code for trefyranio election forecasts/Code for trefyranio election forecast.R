@@ -373,7 +373,7 @@ ggplot(Pred_point, aes(x=reorder(Party, -value, FUN=mean), y=value)) +
   theme(axis.line=element_line( colour="black")) +
   theme(legend.position="none") +
   annotate("text", label="Fyraprocentsspärren", x=2, y=3, size=7)+
-  annotate("text", label="Senaste mätningen: Novus 2014-09-13",
+  annotate("text", label="",
            x=7, y=37, size=7, colour="navajowhite4")
 
 # Block point prediction
@@ -400,7 +400,7 @@ ggplot(Block_point, aes(x=Block, y=value)) +
   theme(axis.line=element_line( colour="black")) +
   theme(legend.position="none") +
   annotate("text", label="(SD och Fi ej inkluderade)", x=1.5, y=55, vjust=-1) +
-  annotate("text", label="Senaste mätningen: Novus 2014-09-13",
+  annotate("text", label="",
            x=2.1, y=53, size=7, colour="navajowhite4") 
 
 # Time trend
