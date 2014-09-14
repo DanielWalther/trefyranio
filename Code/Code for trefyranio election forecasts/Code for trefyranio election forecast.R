@@ -1,6 +1,6 @@
 
 ## Daniel Walther
-## 2014-09-12
+## 2014-09-14
 ## R version 3.1.0 (2014-04-10) -- "Spring Dance"
 ## Full, replication ready code for the election forecasts on trefyranio.com
 
@@ -24,7 +24,7 @@ library(reshape2)
 library(tidyr)
 library(dplyr)
 
-#### 1. Loading the data and getting it into shape
+#### 1. Getting the data and creating a weighted time series
 data_url <- "https://github.com/MansMeg/SwedishPolls/raw/master/Data/Polls.csv"
 polls <- repmis::source_data(data_url, sep = ",", dec = ".", header = TRUE)
 
@@ -83,7 +83,7 @@ compdata$N[is.na(compdata$N)] = compdata$Nmean[is.na(compdata$N)]
 opinion$N = as.integer(compdata$N)
 
 opinion$N[opinion$house=="Sentio"] = 0.8*opinion$N[opinion$house=="Sentio"]
-opinion$N[opinion$house=="United Minds"] = 0.9*opinion$N[opinion$house=="United Minds"]
+opinion$N[opinion$house=="Skop"] = 0.5*opinion$N[opinion$house=="Skop"]
 
 # Create new variables
 opinion = mutate(opinion, Alliansen = M + FP + C + KD,
@@ -373,8 +373,9 @@ ggplot(Pred_point, aes(x=reorder(Party, -value, FUN=mean), y=value)) +
   theme(axis.line=element_line( colour="black")) +
   theme(legend.position="none") +
   annotate("text", label="Fyraprocentsspärren", x=2, y=3, size=7)+
-  annotate("text", label="",
-           x=7, y=37, size=7, colour="navajowhite4")
+  annotate("text", label="trefyranio.com",
+           x=9, y=38, size=7, colour="navajowhite4", 
+           fontface="italic")
 
 # Block point prediction
 ggplot(Block_point, aes(x=Block, y=value)) +
@@ -400,8 +401,9 @@ ggplot(Block_point, aes(x=Block, y=value)) +
   theme(axis.line=element_line( colour="black")) +
   theme(legend.position="none") +
   annotate("text", label="(SD och Fi ej inkluderade)", x=1.5, y=55, vjust=-1) +
-  annotate("text", label="",
-           x=2.1, y=53, size=7, colour="navajowhite4") 
+  annotate("text", label="trefyranio.com",
+           x=2.4, y=54, size=7, colour="navajowhite4", 
+           fontface="italic") 
 
 # Time trend
 opinionlong = dplyr::select(opinion, Alliansen, Left) %>%
@@ -435,6 +437,9 @@ Long2 = cbind(Long, Polls = opinionlong$Polls)
 ggplot(Long2, aes(x=date, y=value, colour=Party)) +
   geom_point(aes(y=Polls), colour="grey", size=3) +
   geom_line(size=1.2) +
+  scale_colour_manual(values=c("firebrick1", "firebrick3", "seagreen",
+                               "royalblue", "royalblue4", "royalblue1",
+                               "purple4", "goldenrod3")) +    
   facet_wrap(~Party, scales="free_y") +
   scale_x_date(breaks="2 months", 
                limits=c(as.Date("2013-10-13"), 
